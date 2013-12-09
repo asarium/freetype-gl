@@ -322,8 +322,7 @@ typedef struct
  * @param  icount    number of indices
  */
   size_t
-  vertex_buffer_insert( vertex_buffer_t * self,
-                        size_t index,
+  vertex_buffer_insert( vertex_buffer_t * self, const size_t index,
                         const void * vertices, const size_t vcount,  
                         const GLuint * indices, const size_t icount );
 

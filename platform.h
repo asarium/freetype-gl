@@ -62,6 +62,11 @@ extern "C" {
 		double round(double v);
 #	endif // _MSC_VER
 #    pragma warning (disable: 4244) // suspend warnings
+#	if defined(_MSC_VER)
+		// Visual Studio wants to see _strdup instead of strdup
+#		define strdup _strdup
+#		define wcsdup _wcsdup
+#	endif
 #endif // _WIN32 || _WIN64
 
 #ifdef __cplusplus

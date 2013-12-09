@@ -43,6 +43,7 @@
 #include <math.h>
 #include <wchar.h>
 #include "texture-font.h"
+#include "platform.h"
 
 #define HRES  64
 #define HRESf 64.f
@@ -289,23 +290,23 @@ texture_font_init(texture_font_t *self)
         return -1;
 
     self->underline_position = face->underline_position / (float)(HRESf*HRESf) * self->size;
-    self->underline_position = round( self->underline_position );
+	self->underline_position = (float) round(self->underline_position);
     if( self->underline_position > -2 )
     {
         self->underline_position = -2.0;
     }
 
     self->underline_thickness = face->underline_thickness / (float)(HRESf*HRESf) * self->size;
-    self->underline_thickness = round( self->underline_thickness );
+	self->underline_thickness = (float) round(self->underline_thickness);
     if( self->underline_thickness < 1 )
     {
         self->underline_thickness = 1.0;
     }
 
     metrics = face->size->metrics;
-    self->ascender = (metrics.ascender >> 6) / 100.0;
-    self->descender = (metrics.descender >> 6) / 100.0;
-    self->height = (metrics.height >> 6) / 100.0;
+    self->ascender = (metrics.ascender >> 6) / 100.0f;
+    self->descender = (metrics.descender >> 6) / 100.0f;
+    self->height = (metrics.height >> 6) / 100.0f;
     self->linegap = self->height - self->ascender + self->descender;
     FT_Done_Face( face );
     FT_Done_FreeType( library );
@@ -318,7 +319,7 @@ texture_font_init(texture_font_t *self)
 
 // --------------------------------------------- texture_font_new_from_file ---
 texture_font_t *
-texture_font_new_from_file(texture_atlas_t *atlas, float pt_size,
+texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
         const char *filename)
 {
     texture_font_t *self;

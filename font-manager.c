@@ -42,6 +42,7 @@
 #include <string.h>
 #include <wchar.h>
 #include "font-manager.h"
+#include "platform.h"
 
 
 // ------------------------------------------------------------ file_exists ---
