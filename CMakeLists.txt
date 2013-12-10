@@ -35,6 +35,7 @@ SET( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules"
                        "${CMAKE_MODULE_PATH}" )
 
 OPTION(freetype-gl_BUILD_DEMOS "Build the freetype-gl example programs" ON)
+OPTION(USE_GLEW "Disable usage of GLEW" ON)
 
 # Get required and optional library
 FIND_PACKAGE( OpenGL REQUIRED )
@@ -77,16 +78,24 @@ ENDIF( WIN32 OR WIN64 )
 INCLUDE_DIRECTORIES( ${GLUT_INCLUDE_DIR}
                      ${OPENGL_INCLUDE_DIRS}
                      ${FREETYPE_INCLUDE_DIRS}
-                     ${GLEW_INCLUDE_DIRS}
                      ${CMAKE_CURRENT_SOURCE_DIR}
-                     ${VS789FIX_INCLUDE_DIR}
-                     ${GLEW_INCLUDE_DIR})
+                     ${VS789FIX_INCLUDE_DIR})
+					 
+IF(USE_GLEW)
+	INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+ELSE(USE_GLEW)
+	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external)
+ENDIF(USE_GLEW)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/project.h.in ${CMAKE_CURRENT_BINARY_DIR}/generated/project.h)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/generated)
 					 
 IF(MSVC)
 	ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF(MSVC)
 
-SET( FREETYPE_GL_SRC freetype-gl.h
+SET( FREETYPE_GL_SRC "${CMAKE_CURRENT_BINARY_DIR}/generated/project.h"
+					 freetype-gl.h
                      vec234.h
                      opengl.h
                      markup.h
@@ -100,7 +109,9 @@ SET( FREETYPE_GL_SRC freetype-gl.h
                      shader.c           shader.h
                      vector.c           vector.h
                      platform.c         platform.h
-					 callbacks.c		callbacks.h)
+					 callbacks.c		callbacks.h
+					 ext_funcs.c		ext_funcs.h
+					 opengl_funcs.h)
 
 ADD_LIBRARY( freetype-gl STATIC ${FREETYPE_GL_SRC} )
 
