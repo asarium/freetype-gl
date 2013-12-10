@@ -37,8 +37,10 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <math.h>
+
 #include "opengl.h"
 #include "text-buffer.h"
+#include "callbacks.h"
 
 
 #define SET_GLYPH_VERTEX(value,x0,y0,z0,s0,t0,r,g,b,a,sh,gm) { \
@@ -70,6 +72,29 @@ text_buffer_new( size_t depth )
     self->base_color.a = 1.0;
     self->line_descender = 0;
     return self;
+}
+
+// ----------------------------------------------------------------------------
+text_buffer_t *
+text_buffer_new_with_shader(size_t depth, const char* vertex_shader,
+							const char* fragment_shader)
+{
+
+	text_buffer_t *self = (text_buffer_t *)malloc(sizeof(text_buffer_t));
+	self->buffer = vertex_buffer_new(
+		"vertex:3f,tex_coord:2f,color:4f,ashift:1f,agamma:1f");
+	self->manager = font_manager_new(512, 512, depth);
+	self->shader = shader_build(vertex_shader, fragment_shader);
+	self->shader_texture = glGetUniformLocation(self->shader, "texture");
+	self->shader_pixel = glGetUniformLocation(self->shader, "pixel");
+	self->line_start = 0;
+	self->line_ascender = 0;
+	self->base_color.r = 0.0;
+	self->base_color.g = 0.0;
+	self->base_color.b = 0.0;
+	self->base_color.a = 1.0;
+	self->line_descender = 0;
+	return self;
 }
 
 // ----------------------------------------------------------------------------
@@ -185,9 +210,9 @@ text_buffer_add_text( text_buffer_t * self,
     {
         markup->font = font_manager_get_from_markup( manager, markup );
         if( ! markup->font )
-        {
-            fprintf( stderr, "Houston, we've got a problem !\n" );
-            exit( EXIT_FAILURE );
+		{
+			freetype_gl_get_message_callback()(MESSAGE_ERROR, "Houston, we've got a problem!");
+			return;
         }
     }
 

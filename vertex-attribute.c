@@ -38,6 +38,7 @@
 #include "vec234.h"
 #include "platform.h"
 #include "vertex-attribute.h"
+#include "callbacks.h"
 
 
 
@@ -94,16 +95,24 @@ vertex_attribute_parse( char *format )
     {
         name = strndup(format, p-format);
         if( *(++p) == '\0' ) 
-        {
-            fprintf( stderr, "No size specified for '%s' attribute\n", name );
+		{
+			char message[128];
+			sprintf(message, "No size specified for '%s' attribute", name);
+
+			freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+
             free( name );
             return 0;
         }
         size = *p - '0';
 
         if( *(++p) == '\0' ) 
-        {
-            fprintf( stderr, "No format specified for '%s' attribute\n", name );
+		{
+			char message[128];
+			sprintf(message, "No format specified for '%s' attribute", name);
+
+			freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+
             free( name );
             return 0;
         }
@@ -119,8 +128,12 @@ vertex_attribute_parse( char *format )
 
     }
     else
-    {
-        fprintf(stderr, "Vertex attribute format not understood ('%s')\n", format );   
+	{
+		char message[128];
+		sprintf(message, "Vertex attribute format not understood ('%s')", format);
+
+		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+
         return 0;
     }
 

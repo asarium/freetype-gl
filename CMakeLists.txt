@@ -99,7 +99,8 @@ SET( FREETYPE_GL_SRC freetype-gl.h
                      text-buffer.c      text-buffer.h
                      shader.c           shader.h
                      vector.c           vector.h
-                     platform.c         platform.h)
+                     platform.c         platform.h
+					 callbacks.c		callbacks.h)
 
 ADD_LIBRARY( freetype-gl STATIC ${FREETYPE_GL_SRC} )
 

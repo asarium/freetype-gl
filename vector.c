@@ -35,6 +35,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "vector.h"
+#include "callbacks.h"
 
 
 
@@ -46,10 +47,9 @@ vector_new( size_t item_size )
     assert( item_size );
 
     if( !self )
-    {
-        fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
+	{
+		freetype_gl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
+		return NULL;
     }
     self->item_size = item_size;
     self->size      = 0;

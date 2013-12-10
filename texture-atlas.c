@@ -36,8 +36,10 @@
 #include <string.h>
 #include <assert.h>
 #include <limits.h>
+
 #include "opengl.h"
 #include "texture-atlas.h"
+#include "callbacks.h"
 
 
 // ------------------------------------------------------ texture_atlas_new ---
@@ -54,10 +56,9 @@ texture_atlas_new( const size_t width,
 
     assert( (depth == 1) || (depth == 3) || (depth == 4) );
     if( self == NULL)
-    {
-        fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
+	{
+		freetype_gl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
+		return NULL;
     }
     self->nodes = vector_new( sizeof(ivec3) );
     self->used = 0;
@@ -71,10 +72,11 @@ texture_atlas_new( const size_t width,
         calloc( width*height*depth, sizeof(unsigned char) );
 
     if( self->data == NULL)
-    {
-        fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
+	{
+		freetype_gl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
+
+		free(self);
+		return NULL;
     }
 
     return self;
@@ -242,10 +244,16 @@ texture_atlas_get_region( texture_atlas_t * self,
 
     node = (ivec3 *) malloc( sizeof(ivec3) );
     if( node == NULL)
-    {
-        fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
+	{
+		freetype_gl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
+
+		ivec4 dummy;
+		dummy.x = 0;
+		dummy.y = 0;
+		dummy.z = 0;
+		dummy.w = 0;
+
+		return dummy;
     }
     node->x = region.x;
     node->y = region.y + height;

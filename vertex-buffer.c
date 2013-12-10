@@ -38,6 +38,7 @@
 #include "vec234.h"
 #include "platform.h"
 #include "vertex-buffer.h"
+#include "callbacks.h"
 
 
 /**
@@ -214,8 +215,12 @@ vertex_buffer_print( vertex_buffer_t * self )
 
     assert(self);
 
-    fprintf( stderr, "%ld vertices, %ld indices\n",
-             vector_size( self->vertices ), vector_size( self->indices ) );
+	char message[128];
+	sprintf(message, "%ld vertices, %ld indices",
+		vector_size(self->vertices), vector_size(self->indices));
+
+	freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+
     while( self->attributes[i] )
     {
         int j = 8;
@@ -230,12 +235,16 @@ vertex_buffer_print( vertex_buffer_t * self )
         case GL_UNSIGNED_INT:   j=6; break;
         case GL_FLOAT:          j=7; break;
         default:                j=8; break;
-        }
-        fprintf(stderr, "%s : %dx%s (+%p)\n",
-                self->attributes[i]->name, 
-                self->attributes[i]->size, 
-                gltypes[j],
-                self->attributes[i]->pointer);
+		}
+
+		char message[128];
+		sprintf(message, "%s : %dx%s (+%p)",
+			self->attributes[i]->name,
+			self->attributes[i]->size,
+			gltypes[j],
+			self->attributes[i]->pointer);
+
+		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
 
         i += 1;
     }

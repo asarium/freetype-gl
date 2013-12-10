@@ -33,8 +33,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "opengl.h"
 #include "shader.h"
+#include "callbacks.h"
 
 
 // ------------------------------------------------------------ shader_read ---
@@ -48,7 +50,11 @@ shader_read( const char *filename )
     file = fopen( filename, "rb" );
     if( !file )
     {
-        fprintf( stderr, "Unable to open file \"%s\".\n", filename );
+		char message[128];
+		sprintf(message, "Unable to open file \"%s\".", filename);
+
+		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+
 		return 0;
     }
 	fseek( file, 0, SEEK_END );
@@ -78,10 +84,50 @@ shader_compile( const char* source,
     {
         GLchar messages[256];
         glGetShaderInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, "%s\n", messages );
-        exit( EXIT_FAILURE );
+
+		freetype_gl_get_message_callback()(MESSAGE_WARNING, messages);
+
+		glDeleteShader( handle );
+		return 0;
     }
     return handle;
+}
+
+GLuint
+shader_build(const char * vert_source,
+			const char * frag_source)
+{
+	GLuint handle = glCreateProgram();
+	GLint link_status;
+
+	if (vert_source && strlen(vert_source))
+	{
+		GLuint vert_shader = shader_compile(vert_source, GL_VERTEX_SHADER);
+
+		if (vert_shader)
+			glAttachShader(handle, vert_shader);
+	}
+	if (frag_source && strlen(frag_source))
+	{
+		GLuint frag_shader = shader_compile(frag_source, GL_FRAGMENT_SHADER);
+
+		if (frag_shader)
+			glAttachShader(handle, frag_shader);
+	}
+
+	glLinkProgram(handle);
+
+	glGetProgramiv(handle, GL_LINK_STATUS, &link_status);
+	if (link_status == GL_FALSE)
+	{
+		GLchar messages[256];
+		glGetProgramInfoLog(handle, sizeof(messages), 0, &messages[0]);
+
+		freetype_gl_get_message_callback()(MESSAGE_WARNING, messages);
+		
+		glDeleteProgram(handle);
+	}
+	return handle;
 }
 
 
@@ -96,27 +142,33 @@ shader_load( const char * vert_filename,
     if( vert_filename && strlen( vert_filename ) )
     {
         char *vert_source = shader_read( vert_filename );
-        GLuint vert_shader = shader_compile( vert_source, GL_VERTEX_SHADER);
-        glAttachShader( handle, vert_shader);
-        free( vert_source );
+		GLuint vert_shader = shader_compile(vert_source, GL_VERTEX_SHADER);
+		free(vert_source);
+
+		if (vert_shader)
+			glAttachShader(handle, vert_shader);
     }
     if( frag_filename && strlen( frag_filename ) )
     {
         char *frag_source = shader_read( frag_filename );
-        GLuint frag_shader = shader_compile( frag_source, GL_FRAGMENT_SHADER);
-        glAttachShader( handle, frag_shader);
-        free( frag_source );
+		GLuint frag_shader = shader_compile(frag_source, GL_FRAGMENT_SHADER);
+		free(frag_source);
+
+		if (frag_shader)
+			glAttachShader(handle, frag_shader);
     }
 
     glLinkProgram( handle );
 
     glGetProgramiv( handle, GL_LINK_STATUS, &link_status );
     if (link_status == GL_FALSE)
-    {
-        GLchar messages[256];
-        glGetProgramInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, "%s\n", messages );
-        exit(1);
+	{
+		GLchar messages[256];
+		glGetProgramInfoLog(handle, sizeof(messages), 0, &messages[0]);
+
+		freetype_gl_get_message_callback()(MESSAGE_WARNING, messages);
+
+		glDeleteProgram(handle);
     }
     return handle;
 }
