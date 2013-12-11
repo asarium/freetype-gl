@@ -83,19 +83,16 @@ INCLUDE_DIRECTORIES( ${GLUT_INCLUDE_DIR}
 					 
 IF(USE_GLEW)
 	INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+	ADD_DEFINITIONS(-DUSE_GLEW)
 ELSE(USE_GLEW)
 	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external)
 ENDIF(USE_GLEW)
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/project.h.in ${CMAKE_CURRENT_BINARY_DIR}/generated/project.h)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/generated)
-					 
+	 
 IF(MSVC)
 	ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF(MSVC)
 
-SET( FREETYPE_GL_SRC "${CMAKE_CURRENT_BINARY_DIR}/generated/project.h"
-					 freetype-gl.h
+SET( FREETYPE_GL_SRC freetype-gl.h
                      vec234.h
                      opengl.h
                      markup.h
@@ -112,10 +109,10 @@ SET( FREETYPE_GL_SRC "${CMAKE_CURRENT_BINARY_DIR}/generated/project.h"
 					 callbacks.c		callbacks.h
 					 ext_funcs.c		ext_funcs.h
 					 opengl_funcs.h)
-
+					 
 ADD_LIBRARY( freetype-gl STATIC ${FREETYPE_GL_SRC} )
 
-LINK_DIRECTORIES(${PROJECT_SOURCE_DIR})
+LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 MACRO( DEMO _target _sources)
      add_executable(${_target} ${_sources})

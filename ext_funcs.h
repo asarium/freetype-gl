@@ -35,8 +35,6 @@
 #ifndef __EXT_FUNCS_H__
 #define __EXT_FUNCS_H__
 
-#include "project.h"
-
 #ifndef USE_GLEW
 
 #ifdef __cplusplus

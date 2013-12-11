@@ -34,8 +34,6 @@
 #ifndef __OPEN_GL_H__
 #define __OPEN_GL_H__
 
-#include "project.h"
-
 #ifdef USE_GLEW
 #if defined(__APPLE__)
 #   include <GL/glew.h>
@@ -57,7 +55,6 @@
 #  include <Windows.h>
 
 #  include <GL/gl.h>
-#  include <GL/glu.h>
 #  include "GL/glext.h"
 #elif defined(__APPLE__)
 #  ifdef GL_ES_VERSION_2_0
@@ -68,7 +65,6 @@
 #  include "GL/glext.h"
 #else
 #  include <GL/gl.h>
-#  include <GL/glu.h>
 #  include "GL/glext.h"
 #endif
 

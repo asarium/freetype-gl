@@ -35,8 +35,6 @@
 #ifndef __OPENGL_FUNCS_H__
 #define __OPENGL_FUNCS_H__
 
-#include "project.h"
-
 #ifndef USE_GLEW
 
 #include "opengl.h"
