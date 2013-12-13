@@ -65,6 +65,10 @@ IF( WIN32 OR WIN64 )
     SET( VS789FIX_INCLUDE_DIR
          ${CMAKE_CURRENT_SOURCE_DIR}/windows/include )
     SET( ANT_TWEAK_BAR_FOUND "YES" )
+	
+	SET(GLEW_DLL ${WINDOWS_DIR}/glew/bin/glew32.dll)
+	
+	SET(GLUT_DLL ${WINDOWS_DIR}/glut/glut32.dll)
 ELSE( WIN32 OR WIN64 )
     FIND_PACKAGE( GLUT REQUIRED )
     FIND_PACKAGE( Freetype REQUIRED )
@@ -130,9 +134,26 @@ MACRO( DEMO _target _sources)
       # Compile demos as C++
       set_source_files_properties(${_sources} PROPERTIES LANGUAGE CXX)
     endif()
+
+	IF(WIN32)
+		ADD_CUSTOM_COMMAND(
+			TARGET ${_target} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy "${GLEW_DLL}"  "$<TARGET_FILE_DIR:${_target}>"
+			COMMENT "copying glew dlls ..."
+		)
+		ADD_CUSTOM_COMMAND(
+			TARGET ${_target} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy "${GLUT_DLL}"  "$<TARGET_FILE_DIR:${_target}>"
+			COMMENT "copying glut dlls ..."
+		)
+	ENDIF(WIN32)
 ENDMACRO( DEMO )
 
 IF (freetype-gl_BUILD_DEMOS)
+
+IF(MSVC)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+ENDIF(MSVC)
 
 DEMO( demo-texture          "demo-texture.c" )
 DEMO( demo-font             "demo-font.c" )
