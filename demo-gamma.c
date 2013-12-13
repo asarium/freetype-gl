@@ -138,7 +138,7 @@ int main( int argc, char **argv )
     }
     fprintf( stderr, "Using GLEW %s\n", glewGetString(GLEW_VERSION) );
 
-    buffer = text_buffer_new( LCD_FILTERING_OFF );
+	buffer = text_buffer_new(LCD_FILTERING_OFF, "shaders/text.vert", "shaders/text.frag");
     vec4 white = {{1.0, 1.0, 1.0, 1.0}};
     vec4 black = {{0.0, 0.0, 0.0, 1.0}};
     vec4 none  = {{1.0, 1.0, 1.0, 0.0}};
