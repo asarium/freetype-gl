@@ -89,7 +89,7 @@ typedef struct
     /**
      * A font family name such as "normal", "sans", "serif" or "monospace".
      */
-    char * family;
+    const char * family;
 
     /**
      * Font size.
