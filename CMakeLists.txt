@@ -138,12 +138,12 @@ MACRO( DEMO _target _sources)
 	IF(WIN32)
 		ADD_CUSTOM_COMMAND(
 			TARGET ${_target} POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy "${GLEW_DLL}"  "$<TARGET_FILE_DIR:${_target}>"
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different "${GLEW_DLL}"  "$<TARGET_FILE_DIR:${_target}>"
 			COMMENT "copying glew dlls ..."
 		)
 		ADD_CUSTOM_COMMAND(
 			TARGET ${_target} POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy "${GLUT_DLL}"  "$<TARGET_FILE_DIR:${_target}>"
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different "${GLUT_DLL}"  "$<TARGET_FILE_DIR:${_target}>"
 			COMMENT "copying glut dlls ..."
 		)
 	ENDIF(WIN32)
