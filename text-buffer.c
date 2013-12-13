@@ -53,15 +53,14 @@
 
 // ----------------------------------------------------------------------------
 text_buffer_t *
-text_buffer_new( size_t depth )
+text_buffer_new( size_t depth, const char* vertex_name, const char* fragment_name )
 {
     
     text_buffer_t *self = (text_buffer_t *) malloc (sizeof(text_buffer_t));
     self->buffer = vertex_buffer_new(
         "vertex:3f,tex_coord:2f,color:4f,ashift:1f,agamma:1f" );
     self->manager = font_manager_new( 512, 512, depth );
-    self->shader = shader_load("shaders/text.vert",
-                               "shaders/text.frag");
+	self->shader = shader_load(vertex_name, fragment_name);
     self->shader_texture = glGetUniformLocation(self->shader, "texture");
     self->shader_pixel = glGetUniformLocation(self->shader, "pixel");
     self->line_start = 0;
@@ -72,29 +71,6 @@ text_buffer_new( size_t depth )
     self->base_color.a = 1.0;
     self->line_descender = 0;
     return self;
-}
-
-// ----------------------------------------------------------------------------
-text_buffer_t *
-text_buffer_new_with_shader(size_t depth, const char* vertex_shader,
-							const char* fragment_shader)
-{
-
-	text_buffer_t *self = (text_buffer_t *)malloc(sizeof(text_buffer_t));
-	self->buffer = vertex_buffer_new(
-		"vertex:3f,tex_coord:2f,color:4f,ashift:1f,agamma:1f");
-	self->manager = font_manager_new(512, 512, depth);
-	self->shader = shader_build(vertex_shader, fragment_shader);
-	self->shader_texture = glGetUniformLocation(self->shader, "texture");
-	self->shader_pixel = glGetUniformLocation(self->shader, "pixel");
-	self->line_start = 0;
-	self->line_ascender = 0;
-	self->base_color.r = 0.0;
-	self->base_color.g = 0.0;
-	self->base_color.b = 0.0;
-	self->base_color.a = 1.0;
-	self->line_descender = 0;
-	return self;
 }
 
 // ----------------------------------------------------------------------------

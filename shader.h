@@ -88,21 +88,6 @@ extern "C" {
   shader_compile( const char* source,
 					const GLenum type);
 
-
-  /**
-  * Build a program from provided vertex and fragment shaders
-  *
-  * @param  vert_source vertex shader source
-  * @param  frag_source fragment shader source
-  *
-  * @return a handle on the built program
-  *
-  */
-  GLuint
-  shader_build(const char * vert_source,
-				const char * frag_source);
-
-
 /**
  * Load a vertex and fragment shader sources and build program
  *

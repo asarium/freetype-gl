@@ -43,27 +43,21 @@
 char *
 shader_read( const char *filename )
 {
-    FILE * file;
     char * buffer;
 	size_t size;
 
-    file = fopen( filename, "rb" );
-    if( !file )
-    {
-		char message[128];
-		sprintf(message, "Unable to open file \"%s\".", filename);
+	if (!freetype_gl_get_filesystem_callback()(filename, NULL, &size))
+	{
+		return NULL;
+	}
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+	buffer = (char *)malloc((size + 1) * sizeof(char));
 
-		return 0;
-    }
-	fseek( file, 0, SEEK_END );
-	size = ftell( file );
-	fseek(file, 0, SEEK_SET );
-    buffer = (char *) malloc( (size+1) * sizeof( char *) );
-	fread( buffer, sizeof(char), size, file );
-    buffer[size] = 0;
-    fclose( file );
+	if (!freetype_gl_get_filesystem_callback()(filename, buffer, NULL))
+	{
+		return NULL;
+	}
+	buffer[size] = 0;
     return buffer;
 }
 
@@ -92,44 +86,6 @@ shader_compile( const char* source,
     }
     return handle;
 }
-
-GLuint
-shader_build(const char * vert_source,
-			const char * frag_source)
-{
-	GLuint handle = glCreateProgram();
-	GLint link_status;
-
-	if (vert_source && strlen(vert_source))
-	{
-		GLuint vert_shader = shader_compile(vert_source, GL_VERTEX_SHADER);
-
-		if (vert_shader)
-			glAttachShader(handle, vert_shader);
-	}
-	if (frag_source && strlen(frag_source))
-	{
-		GLuint frag_shader = shader_compile(frag_source, GL_FRAGMENT_SHADER);
-
-		if (frag_shader)
-			glAttachShader(handle, frag_shader);
-	}
-
-	glLinkProgram(handle);
-
-	glGetProgramiv(handle, GL_LINK_STATUS, &link_status);
-	if (link_status == GL_FALSE)
-	{
-		GLchar messages[256];
-		glGetProgramInfoLog(handle, sizeof(messages), 0, &messages[0]);
-
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, messages);
-		
-		glDeleteProgram(handle);
-	}
-	return handle;
-}
-
 
 // ------------------------------------------------------------ shader_load ---
 GLuint

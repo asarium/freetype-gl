@@ -206,20 +206,7 @@ typedef struct {
  *
  */
   text_buffer_t *
-  text_buffer_new(size_t depth);
-
-
-  /**
-  * Creates a new empty text buffer with the specified text shader sources.
-  *
-  * @param depth  Underlying atlas bit depth (1 or 3)
-  *
-  * @return  a new empty text buffer.
-  *
-  */
-  text_buffer_t *
-  text_buffer_new_with_shader(size_t depth, const char* vertex_shader,
-                                const char* fragment_shader);
+  text_buffer_new(size_t depth, const char* vertex_name, const char* fragment_name);
 
 
 /**
