@@ -73,6 +73,21 @@ text_buffer_new( size_t depth, const char* vertex_name, const char* fragment_nam
     return self;
 }
 
+
+// ----------------------------------------------------------------------------
+void
+text_buffer_delete(text_buffer_t* self)
+{
+	assert(self != NULL);
+
+	vertex_buffer_delete(self->buffer);
+	font_manager_delete(self->manager);
+
+	glDeleteProgram(self->shader);
+
+	free(self);
+}
+
 // ----------------------------------------------------------------------------
 void
 text_buffer_clear( text_buffer_t * self )
@@ -85,6 +100,78 @@ text_buffer_clear( text_buffer_t * self )
     self->line_descender = 0;
 }
 
+int
+text_buffer_measure(text_buffer_t * self, markup_t *markup,
+					wchar_t* string, size_t length, size_t* width, size_t* height)
+{
+	if (width == NULL && height == NULL)
+	{
+		return 0;
+	}
+
+	texture_font_t * font = markup->font;
+
+	texture_glyph_t *glyph;
+	float kerning = 0;
+
+	float maxWidth = 0.0f;
+	float currWidth = 0.0f;
+	float currHeight = 0.0f;
+
+	float line_descender = 0.0f;
+	float line_ascender = 0.0f;
+
+	wchar_t current;
+	wchar_t previous = L'\0';
+	for (size_t i = 0; i < length; i++)
+	{
+		current = string[i];
+
+		if (i != 0)
+		{
+			previous = string[i - 1];
+		}
+
+		if (current == L'\n')
+		{
+			if (currWidth > maxWidth)
+			{
+				maxWidth = currWidth;
+			}
+
+			currWidth = 0;
+			currHeight += line_descender;
+			line_descender = 0.0f;
+			line_ascender = 0.0f;
+		}
+
+		if (markup->font->ascender > line_ascender)
+		{
+			line_ascender = markup->font->ascender;
+		}
+
+		if (markup->font->descender < line_descender)
+		{
+			line_descender = markup->font->descender;
+		}
+
+		glyph = texture_font_get_glyph(font, current);
+
+		if (glyph == NULL)
+		{
+			return 0;
+		}
+
+		if (previous && markup->font->kerning)
+		{
+			kerning = texture_glyph_get_kerning(glyph, previous);
+		}
+
+		currWidth += kerning + glyph->advance_x * (1.0f + markup->spacing);
+	}
+
+	return 1;
+}
 
 // ----------------------------------------------------------------------------
 void
@@ -158,7 +245,7 @@ text_buffer_move_last_line( text_buffer_t * self, float dy )
     for( i=self->line_start; i < vector_size( self->buffer->items ); ++i )
     {
         ivec4 *item = (ivec4 *) vector_get( self->buffer->items, i);
-        for( j=item->vstart; j<(size_t) item->vstart+item->vcount; ++j)
+		for (j = item->vert.vstart; j<(size_t)item->vert.vstart + item->vert.vcount; ++j)
         {
             glyph_vertex_t * vertex =
                 (glyph_vertex_t *)  vector_get( self->buffer->vertices, j );

@@ -207,6 +207,15 @@ typedef struct {
  */
   text_buffer_t *
   text_buffer_new(size_t depth, const char* vertex_name, const char* fragment_name);
+  
+/**
+  * Frees the memory associated with a text buffer
+  *
+  * @param self  The text buffer to be freed
+  *
+  */
+  void
+  text_buffer_delete(text_buffer_t* self);
 
 
 /**
@@ -263,10 +272,16 @@ typedef struct {
   * Clear text buffer
   *
   * @param self a text buffer
- */
+  */
   void
   text_buffer_clear( text_buffer_t * self );
 
+/**
+  * Measure the size of the given string
+  */
+  int
+  text_buffer_measure(text_buffer_t * self, markup_t *markup,
+						wchar_t* string, size_t length, size_t* width, size_t* height);
 
 /** @} */
 
