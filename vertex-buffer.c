@@ -381,14 +381,14 @@ vertex_buffer_render_item ( vertex_buffer_t *self,
  
     if( self->indices->size )
     {
-        size_t start = item->istart;
-        size_t count = item->icount;
+		size_t start = item->vert.istart;
+		size_t count = item->vert.icount;
         glDrawElements( self->mode, count, GL_UNSIGNED_INT, (void *)(start*sizeof(GLuint)) );
     }
     else if( self->vertices->size )
     {
-        size_t start = item->vstart;
-        size_t count = item->vcount;
+		size_t start = item->vert.vstart;
+		size_t count = item->vert.vcount;
         glDrawArrays( self->mode, start*self->vertices->item_size, count);
     }
 }
@@ -570,10 +570,10 @@ vertex_buffer_insert( vertex_buffer_t * self, const size_t index,
     }
     
     // Insert item
-    item.x = vstart;
-    item.y = vcount;
-    item.z = istart;
-    item.w = icount;
+	item.coords.x = vstart;
+	item.coords.y = vcount;
+	item.coords.z = istart;
+	item.coords.w = icount;
     vector_insert( self->items, index, &item );
 
     self->state = DIRTY;
@@ -592,19 +592,19 @@ vertex_buffer_erase( vertex_buffer_t * self,
     assert( index < vector_size( self->items ) );
 
     item = (ivec4 *) vector_get( self->items, index );
-    vstart = item->vstart;
-    vcount = item->vcount;
-    istart = item->istart;
-    icount = item->icount;
+	vstart = item->vert.vstart;
+	vcount = item->vert.vcount;
+	istart = item->vert.istart;
+	icount = item->vert.icount;
 
     // Update items
     for( i=0; i<vector_size(self->items); ++i )
     {
         ivec4 * item = (ivec4 *) vector_get( self->items, i );
-        if( (size_t) item->vstart > vstart)
+		if ((size_t)item->vert.vstart > vstart)
         {
-            item->vstart -= vcount;
-            item->istart -= icount;
+			item->vert.vstart -= vcount;
+			item->vert.istart -= icount;
         }
     }
 

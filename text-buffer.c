@@ -65,10 +65,10 @@ text_buffer_new( size_t depth, const char* vertex_name, const char* fragment_nam
     self->shader_pixel = glGetUniformLocation(self->shader, "pixel");
     self->line_start = 0;
     self->line_ascender = 0;
-    self->base_color.r = 0.0;
-    self->base_color.g = 0.0;
-    self->base_color.b = 0.0;
-    self->base_color.a = 1.0;
+    self->base_color.color1.r = 0.0;
+    self->base_color.color1.g = 0.0;
+    self->base_color.color1.b = 0.0;
+    self->base_color.color1.a = 1.0;
     self->line_descender = 0;
     return self;
 }
@@ -321,8 +321,8 @@ text_buffer_add_wchar( text_buffer_t * self,
    
     if( current == L'\n' )
     {
-        pen->x = self->origin.x;
-        pen->y += self->line_descender;
+		pen->coords.x = self->origin.coords.x;
+		pen->coords.y += self->line_descender;
         self->line_descender = 0;
         self->line_ascender = 0;
         self->line_start = vector_size( self->buffer->items );
@@ -331,9 +331,9 @@ text_buffer_add_wchar( text_buffer_t * self,
 
     if( markup->font->ascender > self->line_ascender )
     {
-        float y = pen->y;
-        pen->y -= (markup->font->ascender - self->line_ascender);
-		text_buffer_move_last_line(self, floorf(y - pen->y));
+		float y = pen->coords.y;
+		pen->coords.y -= (markup->font->ascender - self->line_ascender);
+		text_buffer_move_last_line(self, floorf(y - pen->coords.y));
         self->line_ascender = markup->font->ascender;
     }
     if( markup->font->descender < self->line_descender )
@@ -353,17 +353,17 @@ text_buffer_add_wchar( text_buffer_t * self,
     {
         kerning = texture_glyph_get_kerning( glyph, previous );
     }
-    pen->x += kerning;
+	pen->coords.x += kerning;
         
     // Background
-    if( markup->background_color.alpha > 0 )
+    if( markup->background_color.color2.alpha > 0 )
     {
-        float r = markup->background_color.r;
-        float g = markup->background_color.g;
-        float b = markup->background_color.b;
-        float a = markup->background_color.a;
-        float x0 = ( pen->x -kerning );
-		float y0 = floorf(pen->y + font->descender);
+		float r = markup->background_color.color1.r;
+		float g = markup->background_color.color1.g;
+		float b = markup->background_color.color1.b;
+		float a = markup->background_color.color1.a;
+		float x0 = (pen->coords.x - kerning);
+		float y0 = floorf(pen->coords.y + font->descender);
         float x1 = ( x0 + glyph->advance_x );
 		float y1 = floorf(y0 + font->height + font->linegap);
         float s0 = black->s0;
@@ -392,12 +392,12 @@ text_buffer_add_wchar( text_buffer_t * self,
     // Underline
     if( markup->underline )
     {
-        float r = markup->underline_color.r;
-        float g = markup->underline_color.g;
-        float b = markup->underline_color.b;
-        float a = markup->underline_color.a;
-        float x0 = ( pen->x - kerning );
-		float y0 = floorf(pen->y + font->underline_position);
+        float r = markup->underline_color.color1.r;
+        float g = markup->underline_color.color1.g;
+        float b = markup->underline_color.color1.b;
+        float a = markup->underline_color.color1.a;
+		float x0 = (pen->coords.x - kerning);
+		float y0 = floorf(pen->coords.y + font->underline_position);
         float x1 = ( x0 + glyph->advance_x );
 		float y1 = floorf(y0 + font->underline_thickness);
         float s0 = black->s0;
@@ -426,12 +426,12 @@ text_buffer_add_wchar( text_buffer_t * self,
     // Overline
     if( markup->overline )
     {
-        float r = markup->overline_color.r;
-        float g = markup->overline_color.g;
-        float b = markup->overline_color.b;
-        float a = markup->overline_color.a;
-        float x0 = ( pen->x -kerning );
-		float y0 = floorf(pen->y + (int)font->ascender);
+        float r = markup->overline_color.color1.r;
+        float g = markup->overline_color.color1.g;
+        float b = markup->overline_color.color1.b;
+        float a = markup->overline_color.color1.a;
+		float x0 = (pen->coords.x - kerning);
+		float y0 = floorf(pen->coords.y + (int)font->ascender);
         float x1 = ( x0 + glyph->advance_x );
 		float y1 = floorf(y0 + (int)font->underline_thickness);
         float s0 = black->s0;
@@ -459,12 +459,12 @@ text_buffer_add_wchar( text_buffer_t * self,
     /* Strikethrough */
     if( markup->strikethrough )
     {
-        float r = markup->strikethrough_color.r;
-        float g = markup->strikethrough_color.g;
-        float b = markup->strikethrough_color.b;
-        float a = markup->strikethrough_color.a;
-        float x0  = ( pen->x -kerning );
-        float y0  = floorf( pen->y + (int)font->ascender*.33f);
+        float r = markup->strikethrough_color.color1.r;
+        float g = markup->strikethrough_color.color1.g;
+        float b = markup->strikethrough_color.color1.b;
+        float a = markup->strikethrough_color.color1.a;
+		float x0 = (pen->coords.x - kerning);
+		float y0 = floorf(pen->coords.y + (int)font->ascender*.33f);
         float x1  = ( x0 + glyph->advance_x );
 		float y1 = floorf(y0 + (int)font->underline_thickness);
         float s0 = black->s0;
@@ -490,12 +490,12 @@ text_buffer_add_wchar( text_buffer_t * self,
     }
     {
         // Actual glyph
-        float r = markup->foreground_color.red;
-        float g = markup->foreground_color.green;
-        float b = markup->foreground_color.blue;
-        float a = markup->foreground_color.alpha;
-        float x0 = ( pen->x + glyph->offset_x );
-		float y0 = floorf(pen->y + glyph->offset_y);
+        float r = markup->foreground_color.color2.red;
+        float g = markup->foreground_color.color2.green;
+        float b = markup->foreground_color.color2.blue;
+        float a = markup->foreground_color.color2.alpha;
+		float x0 = (pen->coords.x + glyph->offset_x);
+		float y0 = floorf(pen->coords.y + glyph->offset_y);
         float x1 = ( x0 + glyph->width );
 		float y1 = floorf(y0 - glyph->height);
         float s0 = glyph->s0;
@@ -521,6 +521,6 @@ text_buffer_add_wchar( text_buffer_t * self,
         icount += 6;
     
         vertex_buffer_push_back( buffer, vertices, vcount, indices, icount );
-        pen->x += glyph->advance_x * (1.0f + markup->spacing);
+		pen->coords.x += glyph->advance_x * (1.0f + markup->spacing);
     }
 }

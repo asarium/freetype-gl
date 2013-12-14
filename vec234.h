@@ -57,31 +57,31 @@ typedef union
         int y;      /**< Alias for second component */
         int z;      /**< Alias for third component  */
         int w;      /**< Alias for fourht component */
-    };
+    } coords;
 	struct {
         int x_;     /**< Alias for first component  */
         int y_;     /**< Alias for second component */
         int width;  /**< Alias for third component  */
         int height; /**< Alias for fourth component */
-    };
+    } rect;
 	struct {
         int r;      /**< Alias for first component  */
         int g;      /**< Alias for second component */
         int b;      /**< Alias for third component  */
         int a;      /**< Alias for fourth component */
-    };
+    } color1;
 	struct {
         int red;    /**< Alias for first component  */
         int green;  /**< Alias for second component */
         int blue;   /**< Alias for third component  */
         int alpha;  /**< Alias for fourth component */
-    };
+    } color2;
 	struct {
         int vstart; /**< Alias for first component  */
         int vcount; /**< Alias for second component */
         int istart; /**< Alias for third component  */
         int icount; /**< Alias for fourth component */
-    };
+    } vert;
 } ivec4;
 
 
@@ -101,17 +101,17 @@ typedef union
         int x;      /**< Alias for first component  */
         int y;      /**< Alias for second component */
         int z;      /**< Alias for third component  */
-    };
+    } coords;
 	struct {
         int r;      /**< Alias for first component  */
         int g;      /**< Alias for second component */
         int b;      /**< Alias for third component  */
-    };
+    } color1;
 	struct {
         int red;    /**< Alias for first component  */
         int green;  /**< Alias for second component */
         int blue;   /**< Alias for third component  */
-    };
+	} color2;
 } ivec3;
 
 
@@ -129,15 +129,15 @@ typedef union
 	struct {
         int x;      /**< Alias for first component  */
         int y;      /**< Alias for second component */
-    };
+    } coords;
 	struct {
         int s;      /**< Alias for first component  */
         int t;      /**< Alias for second component */
-    };
+    } xy;
 	struct {
         int start;  /**< Alias for first component  */
         int end;    /**< Alias for second component */
-    };
+    } range;
 } ivec2;
 
 
@@ -158,25 +158,25 @@ typedef union
         float y;      /**< Alias fo second component */
         float z;      /**< Alias fo third component  */
         float w;      /**< Alias fo fourth component */
-    };
+    } coords;
 	struct {
         float x_;     /**< Alias for first component */
         float y_;     /**< Alias fo second component */
         float width;  /**< Alias fo third component  */
         float height; /**< Alias fo fourth component */
-    };
+    } rect;
 	struct {
         float r;      /**< Alias for first component */
         float g;      /**< Alias fo second component */
         float b;      /**< Alias fo third component  */
         float a;      /**< Alias fo fourth component */
-    };
+    } color1;
 	struct {
         float red;    /**< Alias for first component */
         float green;  /**< Alias fo second component */
         float blue;   /**< Alias fo third component  */
         float alpha;  /**< Alias fo fourth component */
-    };
+    } color2;
 } vec4;
 
 
@@ -195,17 +195,17 @@ typedef union
         float x;     /**< Alias for first component */
         float y;     /**< Alias fo second component */
         float z;     /**< Alias fo third component  */
-    };
+    } coords;
 	struct {
         float r;     /**< Alias for first component */
         float g;     /**< Alias fo second component */
         float b;     /**< Alias fo third component  */
-    };
+	} color1;
 	struct {
         float red;   /**< Alias for first component */
         float green; /**< Alias fo second component */
         float blue;  /**< Alias fo third component  */
-    };
+	} color2;
 } vec3;
 
 
@@ -222,11 +222,11 @@ typedef union
 	struct {
         float x;   /**< Alias for first component  */
         float y;   /**< Alias for second component */
-    };
+    } coords;
 	struct {
         float s;   /**< Alias for first component  */
         float t;   /**< Alias for second component */
-    };
+    } xy;
 } vec2;
 
 

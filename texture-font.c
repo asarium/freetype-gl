@@ -59,7 +59,7 @@ const struct {
     int          code;
     const char*  message;
 } FT_Errors[] =
-#include FT_ERRORS_H
+#include <freetype/fterrors.h>
 
 // ------------------------------------------------- texture_font_load_face ---
 static int
@@ -614,7 +614,7 @@ texture_font_load_glyphs( texture_font_t * self,
         w = ft_bitmap.width/depth + 1;
         h = ft_bitmap.rows + 1;
         region = texture_atlas_get_region( self->atlas, w, h );
-        if ( region.x < 0 )
+		if (region.coords.x < 0)
         {
 			missed++;
 			freetype_gl_get_message_callback()(MESSAGE_WARNING, "Texture atlas is full!");
@@ -622,8 +622,8 @@ texture_font_load_glyphs( texture_font_t * self,
         }
         w = w - 1;
         h = h - 1;
-        x = region.x;
-        y = region.y;
+		x = region.coords.x;
+		y = region.coords.y;
         texture_atlas_set_region( self->atlas, x, y, w, h,
                                   ft_bitmap.buffer, ft_bitmap.pitch );
 
@@ -659,7 +659,6 @@ texture_font_load_glyphs( texture_font_t * self,
     texture_font_generate_kerning( self );
     return missed;
 }
-
 
 // ------------------------------------------------- texture_font_get_glyph ---
 texture_glyph_t *
@@ -697,23 +696,25 @@ texture_font_get_glyph( texture_font_t * self,
     {
         size_t width  = self->atlas->width;
         size_t height = self->atlas->height;
-        ivec4 region = texture_atlas_get_region( self->atlas, 5, 5 );
+		ivec4 region = texture_atlas_get_region(self->atlas, 5, 5);
+		if (region.coords.x < 0)
+		{
+			freetype_gl_get_message_callback()(MESSAGE_WARNING, "Texture atlas is full!");
+			return NULL;
+		}
+
         texture_glyph_t * glyph = texture_glyph_new( );
         static unsigned char data[4*4*3] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                             -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                             -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                             -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-        if ( region.x < 0 )
-		{
-			freetype_gl_get_message_callback()(MESSAGE_WARNING, "Texture atlas is full!");
-            return NULL;
-        }
-        texture_atlas_set_region( self->atlas, region.x, region.y, 4, 4, data, 0 );
+
+		texture_atlas_set_region(self->atlas, region.coords.x, region.coords.y, 4, 4, data, 0);
         glyph->charcode = (wchar_t)(-1);
-        glyph->s0 = (region.x+2)/(float)width;
-        glyph->t0 = (region.y+2)/(float)height;
-        glyph->s1 = (region.x+3)/(float)width;
-        glyph->t1 = (region.y+3)/(float)height;
+		glyph->s0 = (region.coords.x + 2) / (float)width;
+		glyph->t0 = (region.coords.y + 2) / (float)height;
+		glyph->s1 = (region.coords.x + 3) / (float)width;
+		glyph->t1 = (region.coords.y + 3) / (float)height;
         vector_push_back( self->glyphs, &glyph );
         return glyph; //*(texture_glyph_t **) vector_back( self->glyphs );
     }
