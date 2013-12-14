@@ -20,7 +20,7 @@ void default_callback(message_type_t type, const char* message)
 	}
 }
 
-static message_callback_t message_callback = (message_callback_t) &default_callback;
+static message_callback_t message_callback = &default_callback;
 
 void freetype_gl_set_message_callback(message_callback_t callback)
 {

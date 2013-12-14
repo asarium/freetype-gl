@@ -45,14 +45,13 @@ typedef enum {
 	MESSAGE_ERROR
 } message_type_t;
 
-typedef (*message_callback_t)(message_type_t type, const char* message);
+typedef void (*message_callback_t)(message_type_t type, const char* message);
 
 void freetype_gl_set_message_callback(message_callback_t callback);
 
 message_callback_t freetype_gl_get_message_callback();
 
-
-typedef int(*filesystem_callback_t)(const char* filename, void* data, size_t* size);
+typedef int (*filesystem_callback_t)(const char* filename, void* data, size_t* size);
 
 void freetype_gl_set_filesystem_callback(filesystem_callback_t callback);
 
