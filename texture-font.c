@@ -728,4 +728,90 @@ texture_font_get_glyph( texture_font_t * self,
     return NULL;
 }
 
+int
+texture_font_measure(texture_font_t * self, float spacing,
+						const wchar_t* string, size_t length, float* width, float* height)
+{
+	if (width == NULL && height == NULL)
+	{
+		return 0;
+	}
+
+	texture_glyph_t *glyph;
+	float kerning = 0;
+
+	float maxWidth = 0.0f;
+	float currWidth = 0.0f;
+	float currHeight = 0.0f;
+
+	float line_descender = self->descender;
+	float line_ascender = self->ascender;
+
+	wchar_t current;
+	wchar_t previous = L'\0';
+	for (size_t i = 0; i < length; i++)
+	{
+		current = string[i];
+
+		if (i != 0)
+		{
+			previous = string[i - 1];
+		}
+
+		if (current == L'\n')
+		{
+			if (currWidth > maxWidth)
+			{
+				maxWidth = currWidth;
+			}
+
+			currWidth = 0;
+			currHeight += line_descender;
+			line_descender = 0.0f;
+			line_ascender = 0.0f;
+		}
+
+		if (self->ascender > line_ascender)
+		{
+			line_ascender = self->ascender;
+		}
+
+		if (self->descender < line_descender)
+		{
+			line_descender = self->descender;
+		}
+
+		glyph = texture_font_get_glyph(self, current);
+
+		if (glyph == NULL)
+		{
+			return 0;
+		}
+
+		if (previous && self->kerning)
+		{
+			kerning = texture_glyph_get_kerning(glyph, previous);
+		}
+
+		currWidth += kerning + glyph->advance_x * (1.0f + spacing);
+	}
+
+	if (currWidth > maxWidth)
+	{
+		maxWidth = currWidth;
+	}
+
+	if (width != NULL)
+	{
+		*width = currWidth;
+	}
+
+	if (height != NULL)
+	{
+		*height = currHeight;
+	}
+
+	return 1;
+}
+
 

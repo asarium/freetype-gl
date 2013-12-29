@@ -438,7 +438,11 @@ texture_glyph_get_kerning( const texture_glyph_t * self,
  * @return a new empty glyph (not valid)
  */
 texture_glyph_t *
-texture_glyph_new( void );
+texture_glyph_new(void);
+
+int
+texture_font_measure(texture_font_t * self, float spacing,
+						const wchar_t* string, size_t length, float* width, float* height);
 
 /** @} */
 
