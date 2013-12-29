@@ -41,6 +41,8 @@ IF(freetype-gl_BUILD_DEMOS)
 	SET(USE_GLEW ON)
 ENDIF(freetype-gl_BUILD_DEMOS)
 
+PROJECT(freetype-gl)
+
 # Get required and optional library
 FIND_PACKAGE( OpenGL REQUIRED )
 IF( WIN32 OR WIN64 )
