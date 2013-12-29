@@ -390,11 +390,11 @@ load_glyph( const char *  filename,     const wchar_t charcode,
     printf( "Region width : %d\n", region.width );
     printf( "Region height : %d\n", region.height );
     */
-    texture_atlas_set_region( atlas, region.x, region.y, glyph->width, glyph->height, data, pitch );
-    glyph->s0       = region.x/(float)atlas->width;
-    glyph->t0       = region.y/(float)atlas->height;
-    glyph->s1       = (region.x + glyph->width)/(float)atlas->width;
-    glyph->t1       = (region.y + glyph->height)/(float)atlas->height;
+	texture_atlas_set_region(atlas, region.coords.x, region.coords.y, glyph->width, glyph->height, data, pitch);
+	glyph->s0 = region.coords.x / (float)atlas->width;
+	glyph->t0 = region.coords.y / (float)atlas->height;
+	glyph->s1 = (region.coords.x + glyph->width) / (float)atlas->width;
+	glyph->t1 = (region.coords.y + glyph->height) / (float)atlas->height;
 
     FT_Load_Glyph( face, glyph_index,
                    FT_LOAD_RENDER | FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT);

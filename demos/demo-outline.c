@@ -133,10 +133,10 @@ void add_text( vertex_buffer_t * buffer, vec2 * pen, ... )
 
         size_t i;
         texture_font_t * font = markup->font;
-        float r = markup->foreground_color.red;
-        float g = markup->foreground_color.green;
-        float b = markup->foreground_color.blue;
-        float a = markup->foreground_color.alpha;
+        float r = markup->foreground_color.color2.red;
+		float g = markup->foreground_color.color2.green;
+		float b = markup->foreground_color.color2.blue;
+		float a = markup->foreground_color.color2.alpha;
 
         for( i=0; i<wcslen(text); ++i )
         {
@@ -149,11 +149,11 @@ void add_text( vertex_buffer_t * buffer, vec2 * pen, ... )
                 {
                     kerning = texture_glyph_get_kerning( glyph, text[i-1] );
                 }
-                pen->x += kerning;
+				pen->coords.x += kerning;
 
                 /* Actual glyph */
-                float x0  = ( pen->x + glyph->offset_x );
-                float y0  = (int)( pen->y + glyph->offset_y );
+                float x0  = ( pen->coords.x + glyph->offset_x );
+				float y0 = (int)(pen->coords.y + glyph->offset_y);
                 float x1  = ( x0 + glyph->width );
                 float y1  = (int)( y0 - glyph->height );
                 float s0 = glyph->s0;
@@ -170,7 +170,7 @@ void add_text( vertex_buffer_t * buffer, vec2 * pen, ... )
                     { (int)x1,y0,0,  s1,t0,  r,g,b,a } };
                 vertex_buffer_push_back_indices( buffer, indices, 6 );
                 vertex_buffer_push_back_vertices( buffer, vertices, 4 );
-                pen->x += glyph->advance_x;
+				pen->coords.x += glyph->advance_x;
             }
 
         }
@@ -230,16 +230,16 @@ int main( int argc, char **argv )
     markup.font->outline_type = 1;
 
     vec2 pen;
-    pen.x = 40;
-    pen.y = 190;
+    pen.coords.x = 40;
+	pen.coords.y = 190;
     for( i=0; i< 10; ++i)
     {
         markup.font->outline_thickness = 2*((i+1)/10.0);
         add_text( buffer, &pen, &markup, L"g", NULL );
     }
 
-    pen.x = 40;
-    pen.y  = 110;
+	pen.coords.x = 40;
+	pen.coords.y = 110;
     markup.font->outline_type = 2;
     for( i=0; i< 10; ++i)
     {
@@ -247,8 +247,8 @@ int main( int argc, char **argv )
         add_text( buffer, &pen, &markup, L"g", NULL );
     }
 
-    pen.x = 40;
-    pen.y  = 30;
+	pen.coords.x = 40;
+	pen.coords.y = 30;
     markup.font->outline_type = 3;
     for( i=0; i< 10; ++i)
     {

@@ -185,7 +185,7 @@ int main( int argc, char **argv )
     for( i=0; i < 30; ++i)
     {
         text_buffer_add_text( text_buffer, &pen, &markup, text, wcslen(text) );
-        pen.x += i*0.1;
+		pen.coords.x += i*0.1;
     }
 
     shader = shader_load("shaders/v3f-c4f.vert",

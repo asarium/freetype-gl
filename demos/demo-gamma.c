@@ -162,8 +162,8 @@ int main( int argc, char **argv )
 
     size_t i;
     vec2 pen;
-    pen.x = 32;
-    pen.y = 508;
+    pen.coords.x = 32;
+	pen.coords.y = 508;
 
     wchar_t *text = L"A Quick Brown Fox Jumps Over The Lazy Dog 0123456789\n";
     for( i=0; i < 14; ++i )
@@ -171,8 +171,8 @@ int main( int argc, char **argv )
         markup.gamma = 0.75 + 1.5*i*(1.0/14);
         text_buffer_add_text( buffer, &pen, &markup, text, wcslen(text) );
     }
-    pen.x = 32;
-    pen.y = 252;
+	pen.coords.x = 32;
+	pen.coords.y = 252;
     markup.foreground_color = black;
     for( i=0; i < 14; ++i )
     {

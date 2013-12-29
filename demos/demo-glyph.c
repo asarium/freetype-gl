@@ -140,7 +140,7 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
                wchar_t *  text, vec4 * color, vec2 * pen )
 {
     size_t i;
-    float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+	float r = color->color2.red, g = color->color2.green, b = color->color2.blue, a = color->color2.alpha;
     for( i=0; i<wcslen(text); ++i )
     {
         texture_glyph_t *glyph = texture_font_get_glyph( font, text[i] );
@@ -151,9 +151,9 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
             {
                 kerning = texture_glyph_get_kerning( glyph, text[i-1] );
             }
-            pen->x += kerning;
-            int x0  = (int)( pen->x + glyph->offset_x );
-            int y0  = (int)( pen->y + glyph->offset_y );
+            pen->coords.x += kerning;
+			int x0 = (int)(pen->coords.x + glyph->offset_x);
+			int y0 = (int)(pen->coords.y + glyph->offset_y);
             int x1  = (int)( x0 + glyph->width );
             int y1  = (int)( y0 - glyph->height );
             float s0 = glyph->s0;
@@ -166,7 +166,7 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
                                     { x1,y1,0,  s1,t1,  r,g,b,a },
                                     { x1,y0,0,  s1,t0,  r,g,b,a } };
             vertex_buffer_push_back( buffer, vertices, 4, indices, 6 );
-            pen->x += glyph->advance_x;
+			pen->coords.x += glyph->advance_x;
         }
     }
 }
@@ -210,27 +210,27 @@ int main( int argc, char **argv )
     vec2 pen, origin;
 
     texture_glyph_t *glyph  = texture_font_get_glyph( big, L'g' );
-    origin.x = width/2  - glyph->offset_x - glyph->width/2;
-    origin.y = height/2 - glyph->offset_y + glyph->height/2;
+	origin.coords.x = width / 2 - glyph->offset_x - glyph->width / 2;
+	origin.coords.y = height / 2 - glyph->offset_y + glyph->height / 2;
     add_text( text_buffer, big, L"g", &black, &origin );
 
     // title
-    pen.x = 50;
-    pen.y = 560;
+	pen.coords.x = 50;
+	pen.coords.y = 560;
     add_text( text_buffer, title, L"Glyph metrics", &black, &pen );
 
     point_t vertices[] = 
         {   // Baseline
-            {0.1*width, origin.y, 0, black},
-            {0.9*width, origin.y, 0, black}, 
+			{ 0.1*width, origin.coords.y, 0, black },
+			{ 0.9*width, origin.coords.y, 0, black },
 
             // Top line
-            {0.1*width, origin.y + glyph->offset_y, 0, black},
-            {0.9*width, origin.y + glyph->offset_y, 0, black},
+			{ 0.1*width, origin.coords.y + glyph->offset_y, 0, black },
+			{ 0.9*width, origin.coords.y + glyph->offset_y, 0, black },
 
             // Bottom line
-            {0.1*width, origin.y + glyph->offset_y - glyph->height, 0, black},
-            {0.9*width, origin.y + glyph->offset_y - glyph->height, 0, black},
+			{ 0.1*width, origin.coords.y + glyph->offset_y - glyph->height, 0, black },
+			{ 0.9*width, origin.coords.y + glyph->offset_y - glyph->height, 0, black },
 
             // Left line at origin
             {width/2-glyph->offset_x-glyph->width/2, 0.1*height, 0, black},
@@ -261,12 +261,12 @@ int main( int argc, char **argv )
             {width/2-glyph->width/2, 0.85*height, 0, blue},
 
             // Height
-            {0.3*width/2, origin.y + glyph->offset_y - glyph->height, 0, blue},
-            {0.3*width/2, origin.y + glyph->offset_y, 0, blue},
+			{ 0.3*width / 2, origin.coords.y + glyph->offset_y - glyph->height, 0, blue },
+			{ 0.3*width / 2, origin.coords.y + glyph->offset_y, 0, blue },
 
             // Offset y
-            {0.8*width, origin.y + glyph->offset_y, 0, blue},
-            {0.8*width, origin.y , 0, blue},
+			{ 0.8*width, origin.coords.y + glyph->offset_y, 0, blue },
+			{ 0.8*width, origin.coords.y, 0, blue },
 
         };
     GLuint indices [] = {  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,
@@ -275,28 +275,28 @@ int main( int argc, char **argv )
 
 
 
-    pen.x = width/2 - 48;
-    pen.y = .2*height - 18;
+	pen.coords.x = width / 2 - 48;
+	pen.coords.y = .2*height - 18;
     add_text( text_buffer, small, L"advance_x", &blue, &pen );
 
-    pen.x = width/2 - 20;
-    pen.y = .8*height + 3;
+	pen.coords.x = width / 2 - 20;
+	pen.coords.y = .8*height + 3;
     add_text( text_buffer, small, L"width", &blue, &pen );
 
-    pen.x = width/2 - glyph->width/2 + 5;
-    pen.y = .85*height-8;
+	pen.coords.x = width / 2 - glyph->width / 2 + 5;
+	pen.coords.y = .85*height - 8;
     add_text( text_buffer, small, L"offset_x", &blue, &pen );
 
-    pen.x = 0.2*width/2-30;
-    pen.y = origin.y + glyph->offset_y - glyph->height/2;
+	pen.coords.x = 0.2*width / 2 - 30;
+	pen.coords.y = origin.coords.y + glyph->offset_y - glyph->height / 2;
     add_text( text_buffer, small, L"height", &blue, &pen );
 
-    pen.x = 0.8*width+3;
-    pen.y = origin.y + glyph->offset_y/2 -6;
+	pen.coords.x = 0.8*width + 3;
+	pen.coords.y = origin.coords.y + glyph->offset_y / 2 - 6;
     add_text( text_buffer, small, L"offset_y", &blue, &pen );
 
-    pen.x = width/2  - glyph->offset_x - glyph->width/2 - 58;
-    pen.y = height/2 - glyph->offset_y + glyph->height/2 - 20;
+	pen.coords.x = width / 2 - glyph->offset_x - glyph->width / 2 - 58;
+	pen.coords.y = height / 2 - glyph->offset_y + glyph->height / 2 - 20;
     add_text( text_buffer, small, L"Origin", &black, &pen );
 
 

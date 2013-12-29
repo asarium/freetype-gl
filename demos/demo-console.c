@@ -120,7 +120,7 @@ console_new( void )
     self->handlers[__SIGNAL_COMPLETE__]     = 0;
     self->handlers[__SIGNAL_HISTORY_NEXT__] = 0;
     self->handlers[__SIGNAL_HISTORY_PREV__] = 0;
-    self->pen.x = self->pen.y = 0;
+	self->pen.coords.x = self->pen.coords.y = 0;
 
     texture_atlas_t * atlas = texture_atlas_new( 512, 512, 1 );
  
@@ -161,24 +161,24 @@ console_new( void )
     italic.font = texture_font_new_from_file( atlas, 13, "fonts/VeraMoBI.ttf" );
 
     markup_t faint = normal;
-    faint.foreground_color.r = 0.35;
-    faint.foreground_color.g = 0.35;
-    faint.foreground_color.b = 0.35;
+    faint.foreground_color.color1.r = 0.35;
+	faint.foreground_color.color1.g = 0.35;
+	faint.foreground_color.color1.b = 0.35;
 
     markup_t error = normal;
-    error.foreground_color.r = 1.00;
-    error.foreground_color.g = 0.00;
-    error.foreground_color.b = 0.00;
+	error.foreground_color.color1.r = 1.00;
+	error.foreground_color.color1.g = 0.00;
+	error.foreground_color.color1.b = 0.00;
 
     markup_t warning = normal;
-    warning.foreground_color.r = 1.00;
-    warning.foreground_color.g = 0.50;
-    warning.foreground_color.b = 0.50;
+	warning.foreground_color.color1.r = 1.00;
+	warning.foreground_color.color1.g = 0.50;
+	warning.foreground_color.color1.b = 0.50;
 
     markup_t output = normal;
-    output.foreground_color.r = 0.00;
-    output.foreground_color.g = 0.00;
-    output.foreground_color.b = 1.00;
+	output.foreground_color.color1.r = 0.00;
+	output.foreground_color.color1.g = 0.00;
+	output.foreground_color.color1.b = 1.00;
 
     self->markup[MARKUP_NORMAL] = normal;
     self->markup[MARKUP_ERROR] = error;
@@ -211,14 +211,14 @@ console_add_glyph( console_t *self,
     texture_glyph_t *glyph  = texture_font_get_glyph( markup->font, current );
     if( previous != L'\0' )
     {
-        self->pen.x += texture_glyph_get_kerning( glyph, previous );
+        self->pen.coords.x += texture_glyph_get_kerning( glyph, previous );
     }
-    float r = markup->foreground_color.r;
-    float g = markup->foreground_color.g;
-    float b = markup->foreground_color.b;
-    float a = markup->foreground_color.a;
-    int x0  = self->pen.x + glyph->offset_x;
-    int y0  = self->pen.y + glyph->offset_y;
+	float r = markup->foreground_color.color1.r;
+	float g = markup->foreground_color.color1.g;
+	float b = markup->foreground_color.color1.b;
+	float a = markup->foreground_color.color1.a;
+    int x0  = self->pen.coords.x + glyph->offset_x;
+    int y0  = self->pen.coords.y + glyph->offset_y;
     int x1  = x0 + glyph->width;
     int y1  = y0 - glyph->height;
     float s0 = glyph->s0;
@@ -233,8 +233,8 @@ console_add_glyph( console_t *self,
                             { x1,y0,0,  s1,t0,  r,g,b,a } };
     vertex_buffer_push_back( self->buffer, vertices, 4, indices, 6 );
     
-    self->pen.x += glyph->advance_x;
-    self->pen.y += glyph->advance_y;
+	self->pen.coords.x += glyph->advance_x;
+	self->pen.coords.y += glyph->advance_y;
 }
 
 
@@ -247,18 +247,18 @@ console_render( console_t *self )
     glGetIntegerv( GL_VIEWPORT, viewport );
 
     size_t i, index;
-    self->pen.x = 0;
-    self->pen.y = viewport[3];
+    self->pen.coords.x = 0;
+	self->pen.coords.y = viewport[3];
     vertex_buffer_clear( console->buffer );
 
-    int cursor_x = self->pen.x;
-    int cursor_y = self->pen.y;
+	int cursor_x = self->pen.coords.x;
+	int cursor_y = self->pen.coords.y;
 
     markup_t markup;
 
     // console_t buffer
     markup = self->markup[MARKUP_FAINT];
-    self->pen.y -= markup.font->height;
+	self->pen.coords.y -= markup.font->height;
 
     for( i=0; i<self->lines->size; ++i )
     {
@@ -271,10 +271,10 @@ console_render( console_t *self )
                 console_add_glyph( console, text[index], text[index-1], &markup );
             }
         }
-        self->pen.y -= markup.font->height - markup.font->linegap;
-        self->pen.x = 0;
-        cursor_x = self->pen.x;
-        cursor_y = self->pen.y;
+		self->pen.coords.y -= markup.font->height - markup.font->linegap;
+		self->pen.coords.x = 0;
+		cursor_x = self->pen.coords.x;
+		cursor_y = self->pen.coords.y;
     }
 
     // Prompt
@@ -287,7 +287,7 @@ console_render( console_t *self )
             console_add_glyph( console, self->prompt[index], self->prompt[index-1], &markup );
         }
     }
-    cursor_x = (int) self->pen.x;
+	cursor_x = (int)self->pen.coords.x;
 
     // Input
     markup = self->markup[MARKUP_NORMAL];
@@ -296,24 +296,24 @@ console_render( console_t *self )
         console_add_glyph( console, self->input[0], L'\0', &markup );
         if( self->cursor > 0)
         {
-            cursor_x = (int) self->pen.x;
+			cursor_x = (int)self->pen.coords.x;
         }
         for( index=1; index < wcslen(self->input); ++index )
         {
             console_add_glyph( console, self->input[index], self->input[index-1], &markup );
             if( index < self->cursor )
             {
-                cursor_x = (int) self->pen.x;
+				cursor_x = (int)self->pen.coords.x;
             }
         }
     }
 
     // Cursor (we use the black character (-1) as texture )
     texture_glyph_t *glyph  = texture_font_get_glyph( markup.font, -1 );
-    float r = markup.foreground_color.r;
-    float g = markup.foreground_color.g;
-    float b = markup.foreground_color.b;
-    float a = markup.foreground_color.a;
+    float r = markup.foreground_color.color1.r;
+	float g = markup.foreground_color.color1.g;
+	float b = markup.foreground_color.color1.b;
+	float a = markup.foreground_color.color1.a;
     int x0  = cursor_x+1;
     int y0  = cursor_y + markup.font->descender;
     int x1  = cursor_x+2;

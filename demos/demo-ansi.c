@@ -227,14 +227,14 @@ ansi_to_markup( wchar_t *sequence, size_t length, markup_t *markup )
                     break;
                 case 1: markup->bold = 1; break;
                 case 21: markup->bold = 0; break;
-                case 2: markup->foreground_color.alpha = 0.5; break;
-                case 22: markup->foreground_color.alpha = 1.0; break;
+				case 2: markup->foreground_color.color2.alpha = 0.5; break;
+				case 22: markup->foreground_color.color2.alpha = 1.0; break;
                 case 3:  markup->italic = 1; break;
                 case 23: markup->italic = 0; break;
                 case 4:  markup->underline = 1; break;
                 case 24: markup->underline = 0; break;
-                case 8: markup->foreground_color.alpha = 0.0; break;
-                case 28: markup->foreground_color.alpha = 1.0; break;
+				case 8: markup->foreground_color.color2.alpha = 0.0; break;
+				case 28: markup->foreground_color.color2.alpha = 1.0; break;
                 case 9:  markup->strikethrough = 1; break;
                 case 29: markup->strikethrough = 0; break;
                 case 53: markup->overline = 1; break;

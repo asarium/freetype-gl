@@ -107,7 +107,7 @@ void display( void )
             glUniform1i( glGetUniformLocation( shader, "texture" ),
                          0 );
             glUniform4f( glGetUniformLocation( shader, "Color" ),
-                         color.r, color.g, color.b, a);
+				color.color1.r, color.color1.g, color.color1.b, a);
             glUniformMatrix4fv( glGetUniformLocation( shader, "model" ),
                                 1, 0, model.data);
             glUniformMatrix4fv( glGetUniformLocation( shader, "view" ),
@@ -147,7 +147,7 @@ add_text( vertex_buffer_t * buffer, texture_font_t * font,
 {
     vec4 bbox = {{0,0,0,0}};
     size_t i;
-    float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+	float r = color->color2.red, g = color->color2.green, b = color->color2.blue, a = color->color2.alpha;
     for( i=0; i<wcslen(text); ++i )
     {
         texture_glyph_t *glyph = texture_font_get_glyph( font, text[i] );
@@ -158,9 +158,9 @@ add_text( vertex_buffer_t * buffer, texture_font_t * font,
             {
                 kerning = texture_glyph_get_kerning( glyph, text[i-1] );
             }
-            pen->x += kerning;
-            int x0  = (int)( pen->x + glyph->offset_x );
-            int y0  = (int)( pen->y + glyph->offset_y );
+            pen->coords.x += kerning;
+			int x0 = (int)(pen->coords.x + glyph->offset_x);
+			int y0 = (int)(pen->coords.y + glyph->offset_y);
             int x1  = (int)( x0 + glyph->width );
             int y1  = (int)( y0 - glyph->height );
             float s0 = glyph->s0;
@@ -173,12 +173,12 @@ add_text( vertex_buffer_t * buffer, texture_font_t * font,
                                      { x1,y1,0,  s1,t1,  r,g,b,a },
                                      { x1,y0,0,  s1,t0,  r,g,b,a } };
             vertex_buffer_push_back( buffer, vertices, 4, indices, 6 );
-            pen->x += glyph->advance_x;
+			pen->coords.x += glyph->advance_x;
 
-            if  (x0 < bbox.x)                bbox.x = x0;
-            if  (y1 < bbox.y)                bbox.y = y1;
-            if ((x1 - bbox.x) > bbox.width)  bbox.width  = x1-bbox.x;
-            if ((y0 - bbox.y) > bbox.height) bbox.height = y0-bbox.y;
+			if (x0 < bbox.coords.x)                bbox.coords.x = x0;
+			if (y1 < bbox.coords.y)                bbox.coords.y = y1;
+			if ((x1 - bbox.coords.x) > bbox.rect.width)  bbox.rect.width = x1 - bbox.coords.x;
+			if ((y0 - bbox.coords.y) > bbox.rect.height) bbox.rect.height = y0 - bbox.coords.y;
         }
     }
     return bbox;
@@ -292,8 +292,8 @@ main( int argc, char **argv )
     for( i=0; i< vector_size(vertices); ++i )
     {
         vertex_t * vertex = (vertex_t *) vector_get(vertices,i);
-        vertex->x -= (int)(bbox.x + bbox.width/2);
-        vertex->y -= (int)(bbox.y + bbox.height/2);
+		vertex->x -= (int)(bbox.rect.x + bbox.rect.width / 2);
+		vertex->y -= (int)(bbox.rect.y + bbox.rect.height / 2);
     }
 
 

@@ -120,11 +120,11 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
         {
             kerning = texture_glyph_get_kerning( glyph, text[i-1] );
         }
-        pen.x += kerning;
+        pen.coords.x += kerning;
 
         /* Actual glyph */
-        float x0  = ( pen.x + glyph->offset_x );
-        float y0  = (int)( pen.y + glyph->offset_y );
+		float x0 = (pen.coords.x + glyph->offset_x);
+		float y0 = (int)(pen.coords.y + glyph->offset_y);
         float x1  = ( x0 + glyph->width );
         float y1  = (int)( y0 - glyph->height );
         float s0 = glyph->s0;
@@ -141,7 +141,7 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
             { (int)x1,y0,0,  s1,t0,  fg_color_1 } };
         vertex_buffer_push_back_indices( buffer, indices, 6 );
         vertex_buffer_push_back_vertices( buffer, vertices, 4 );
-        pen.x += glyph->advance_x;
+        pen.coords.x += glyph->advance_x;
     }
 }
 

@@ -72,7 +72,7 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
                wchar_t * text, vec4 * color, vec2 * pen )
 {
     size_t i;
-    float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+	float r = color->color2.red, g = color->color2.green, b = color->color2.blue, a = color->color2.alpha;
     for( i=0; i<wcslen(text); ++i )
     {
         texture_glyph_t *glyph = texture_font_get_glyph( font, text[i] );
@@ -83,9 +83,9 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
             {
                 kerning = texture_glyph_get_kerning( glyph, text[i-1] );
             }
-            pen->x += kerning;
-            int x0  = (int)( pen->x + glyph->offset_x );
-            int y0  = (int)( pen->y + glyph->offset_y );
+            pen->coords.x += kerning;
+			int x0 = (int)(pen->coords.x + glyph->offset_x);
+			int y0 = (int)(pen->coords.y + glyph->offset_y);
             int x1  = (int)( x0 + glyph->width );
             int y1  = (int)( y0 - glyph->height );
             float s0 = glyph->s0;
@@ -101,7 +101,7 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
                                     { x1,y0,0,  s1,t0,  r,g,b,a } };
             vertex_buffer_push_back_indices( buffer, indices, 6 );
             vertex_buffer_push_back_vertices( buffer, vertices, 4 );
-            pen->x += glyph->advance_x;
+            pen->coords.x += glyph->advance_x;
         }
     }
 }
@@ -149,12 +149,12 @@ void display( void )
         vec2 pen = {{0,0}};
         vertex_buffer_clear( buffer );
 
-        pen.y = -font->descender;
+		pen.coords.y = -font->descender;
         for( i=0; i<line_count; ++i )
         {
-            pen.x = 10.0;
+			pen.coords.x = 10.0;
             add_text( buffer, font, text, &color, &pen );
-            pen.y += font->height - font->linegap;
+			pen.coords.y += font->height - font->linegap;
         }
     }
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -231,12 +231,12 @@ int main( int argc, char **argv )
     font = texture_font_new_from_file( atlas, 12, "fonts/VeraMono.ttf" );
     buffer = vertex_buffer_new( "vertex:3f,tex_coord:2f,color:4f" ); 
 
-    pen.y = -font->descender;
+	pen.coords.y = -font->descender;
     for( i=0; i<line_count; ++i )
     {
-        pen.x = 10.0;
+		pen.coords.x = 10.0;
         add_text( buffer, font, text, &color, &pen );
-        pen.y += font->height - font->linegap;
+		pen.coords.y += font->height - font->linegap;
     }
 
     glClearColor( 1.0, 1.0, 1.0, 1.0 );

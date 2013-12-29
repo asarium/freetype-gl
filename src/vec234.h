@@ -160,8 +160,8 @@ typedef union
         float w;      /**< Alias fo fourth component */
     } coords;
 	struct {
-        float x_;     /**< Alias for first component */
-        float y_;     /**< Alias fo second component */
+        float x;     /**< Alias for first component */
+        float y;     /**< Alias fo second component */
         float width;  /**< Alias fo third component  */
         float height; /**< Alias fo fourth component */
     } rect;
