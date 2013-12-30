@@ -70,7 +70,7 @@ PFNGLDELETEPROGRAMPROC glDeleteProgram = NULL;
 										(lower) = (PFNGL##upper##PROC) function_ptr; \
 										break
 
-void freetype_gl_init_gl_func(opengl_func_t func, void* function_ptr)
+void ftgl_init_gl_func(opengl_func_t func, void* function_ptr)
 {
 	switch (func)
 	{

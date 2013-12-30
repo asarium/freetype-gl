@@ -72,7 +72,7 @@ typedef enum {
 	FUNC_GL_DELETEPROGRAM,
 } opengl_func_t;
 
-void init_gl_func(opengl_func_t func, void* function_ptr);
+void ftgl_init_gl_func(opengl_func_t func, void* function_ptr);
 
 #ifdef __cplusplus
 }
