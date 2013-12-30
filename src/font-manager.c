@@ -70,7 +70,7 @@ font_manager_new( size_t width, size_t height, size_t depth )
     self = (font_manager_t *) malloc( sizeof(font_manager_t) );
     if( !self )
     {
-		freetype_gl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data");
+		ftgl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data");
 		return NULL;
     }
     self->atlas = atlas;
@@ -159,7 +159,7 @@ font_manager_get_from_filename( font_manager_t *self,
 	char message[128];
 	sprintf(message, "Unable to load \"%s\" (size=%.1f)", filename, size);
 
-	freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+	ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
     return 0;
 }
@@ -185,7 +185,7 @@ font_manager_get_from_description( font_manager_t *self,
     else
     {
 #if defined(_WIN32) || defined(_WIN64)
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, "\"font_manager_get_from_description\" not implemented yet.");
+		ftgl_get_message_callback()(MESSAGE_WARNING, "\"font_manager_get_from_description\" not implemented yet.");
         return 0;
 #endif
         filename = font_manager_match_description( self, family, size, bold, italic );
@@ -195,7 +195,7 @@ font_manager_get_from_description( font_manager_t *self,
 			sprintf(message, "No \"%s (size=%.1f, bold=%d, italic=%d)\" font available.",
 				family, size, bold, italic);
 
-			freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+			ftgl_get_message_callback()(MESSAGE_WARNING, message);
             return 0;
         }
     }

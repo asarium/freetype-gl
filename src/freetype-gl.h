@@ -34,6 +34,8 @@
 #ifndef __FREETYPE_GL_H__
 #define __FREETYPE_GL_H__
 
+#include "globals.h"
+
 /* Mandatory */
 #include "opengl.h"
 #include "vec234.h"

@@ -46,14 +46,14 @@ shader_read( const char *filename )
     char * buffer;
 	size_t size;
 
-	if (!freetype_gl_get_filesystem_callback()(filename, NULL, &size))
+	if (!ftgl_get_filesystem_callback()(filename, NULL, &size))
 	{
 		return NULL;
 	}
 
 	buffer = (char *)malloc((size + 1) * sizeof(char));
 
-	if (!freetype_gl_get_filesystem_callback()(filename, buffer, NULL))
+	if (!ftgl_get_filesystem_callback()(filename, buffer, NULL))
 	{
 		return NULL;
 	}
@@ -79,7 +79,7 @@ shader_compile( const char* source,
         GLchar messages[256];
         glGetShaderInfoLog( handle, sizeof(messages), 0, &messages[0] );
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, messages);
+		ftgl_get_message_callback()(MESSAGE_WARNING, messages);
 
 		glDeleteShader( handle );
 		return 0;
@@ -122,7 +122,7 @@ shader_load( const char * vert_filename,
 		GLchar messages[256];
 		glGetProgramInfoLog(handle, sizeof(messages), 0, &messages[0]);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, messages);
+		ftgl_get_message_callback()(MESSAGE_WARNING, messages);
 
 		glDeleteProgram(handle);
     }

@@ -57,7 +57,7 @@ texture_atlas_new( const size_t width,
     assert( (depth == 1) || (depth == 3) || (depth == 4) );
     if( self == NULL)
 	{
-		freetype_gl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
+		ftgl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
 		return NULL;
     }
     self->nodes = vector_new( sizeof(ivec3) );
@@ -73,7 +73,7 @@ texture_atlas_new( const size_t width,
 
     if( self->data == NULL)
 	{
-		freetype_gl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
+		ftgl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
 
 		free(self);
 		return NULL;
@@ -245,7 +245,7 @@ texture_atlas_get_region( texture_atlas_t * self,
     node = (ivec3 *) malloc( sizeof(ivec3) );
     if( node == NULL)
 	{
-		freetype_gl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
+		ftgl_get_message_callback()(MESSAGE_ERROR, "No more memory for allocating data!");
 
 		ivec4 dummy;
 		dummy.coords.x = 0;

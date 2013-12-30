@@ -82,7 +82,7 @@ texture_font_load_face(texture_font_t *self, float size,
 		char message[128];
 		sprintf(message, "FT_Error (0x%02x) : %s", FT_Errors[error].code, FT_Errors[error].message);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+		ftgl_get_message_callback()(MESSAGE_WARNING, message);
         return 0;
     }
 
@@ -103,7 +103,7 @@ texture_font_load_face(texture_font_t *self, float size,
 		sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 			__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+		ftgl_get_message_callback()(MESSAGE_WARNING, message);
         FT_Done_FreeType(*library);
         return 0;
     }
@@ -115,7 +115,7 @@ texture_font_load_face(texture_font_t *self, float size,
 		sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 			__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+		ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
         FT_Done_Face(*face);
         FT_Done_FreeType(*library);
@@ -130,7 +130,7 @@ texture_font_load_face(texture_font_t *self, float size,
 		sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 			__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+		ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
         FT_Done_Face(*face);
         FT_Done_FreeType(*library);
@@ -171,7 +171,7 @@ texture_glyph_new(void)
 {
     texture_glyph_t *self = (texture_glyph_t *) malloc( sizeof(texture_glyph_t) );
     if(self == NULL) {
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
+		ftgl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
         return NULL;
     }
 
@@ -342,7 +342,7 @@ texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
 
     self = calloc(1, sizeof(*self));
 	if (!self) {
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
+		ftgl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
         return NULL;
     }
 
@@ -372,7 +372,7 @@ texture_font_new_from_memory(texture_atlas_t *atlas, float pt_size,
 
     self = calloc(1, sizeof(*self));
 	if (!self) {
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
+		ftgl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
         return NULL;
     }
 
@@ -488,7 +488,7 @@ texture_font_load_glyphs( texture_font_t * self,
 			sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 				__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-			freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+			ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
             FT_Done_Face( face );
             FT_Done_FreeType( library );
@@ -514,7 +514,7 @@ texture_font_load_glyphs( texture_font_t * self,
 				sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 					__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-				freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+				ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
                 FT_Done_Face( face );
                 FT_Stroker_Done( stroker );
@@ -533,7 +533,7 @@ texture_font_load_glyphs( texture_font_t * self,
 				sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 					__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-				freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+				ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
                 FT_Done_Face( face );
                 FT_Stroker_Done( stroker );
@@ -559,7 +559,7 @@ texture_font_load_glyphs( texture_font_t * self,
 				sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 					__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-				freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+				ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
                 FT_Done_Face( face );
                 FT_Stroker_Done( stroker );
@@ -576,7 +576,7 @@ texture_font_load_glyphs( texture_font_t * self,
 					sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 						__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-					freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+					ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
                     FT_Done_Face( face );
                     FT_Stroker_Done( stroker );
@@ -593,7 +593,7 @@ texture_font_load_glyphs( texture_font_t * self,
 					sprintf(message, "FT_Error (line %d, code 0x%02x) : %s",
 						__LINE__, FT_Errors[error].code, FT_Errors[error].message);
 
-					freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+					ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
                     FT_Done_Face( face );
                     FT_Stroker_Done( stroker );
@@ -617,7 +617,7 @@ texture_font_load_glyphs( texture_font_t * self,
 		if (region.coords.x < 0)
         {
 			missed++;
-			freetype_gl_get_message_callback()(MESSAGE_WARNING, "Texture atlas is full!");
+			ftgl_get_message_callback()(MESSAGE_WARNING, "Texture atlas is full!");
             continue;
         }
         w = w - 1;
@@ -699,7 +699,7 @@ texture_font_get_glyph( texture_font_t * self,
 		ivec4 region = texture_atlas_get_region(self->atlas, 5, 5);
 		if (region.coords.x < 0)
 		{
-			freetype_gl_get_message_callback()(MESSAGE_WARNING, "Texture atlas is full!");
+			ftgl_get_message_callback()(MESSAGE_WARNING, "Texture atlas is full!");
 			return NULL;
 		}
 

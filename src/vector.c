@@ -48,7 +48,7 @@ vector_new( size_t item_size )
 
     if( !self )
 	{
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
+		ftgl_get_message_callback()(MESSAGE_WARNING, "No more memory for allocating data");
 		return NULL;
     }
     self->item_size = item_size;

@@ -201,7 +201,7 @@ text_buffer_add_text( text_buffer_t * self,
         markup->font = font_manager_get_from_markup( manager, markup );
         if( ! markup->font )
 		{
-			freetype_gl_get_message_callback()(MESSAGE_ERROR, "Houston, we've got a problem!");
+			ftgl_get_message_callback()(MESSAGE_ERROR, "Houston, we've got a problem!");
 			return;
         }
     }

@@ -99,7 +99,7 @@ vertex_attribute_parse( char *format )
 			char message[128];
 			sprintf(message, "No size specified for '%s' attribute", name);
 
-			freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+			ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
             free( name );
             return 0;
@@ -111,7 +111,7 @@ vertex_attribute_parse( char *format )
 			char message[128];
 			sprintf(message, "No format specified for '%s' attribute", name);
 
-			freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+			ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
             free( name );
             return 0;
@@ -132,7 +132,7 @@ vertex_attribute_parse( char *format )
 		char message[128];
 		sprintf(message, "Vertex attribute format not understood ('%s')", format);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+		ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
         return 0;
     }

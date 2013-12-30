@@ -22,14 +22,14 @@ void default_callback(message_type_t type, const char* message)
 
 static message_callback_t message_callback = &default_callback;
 
-void freetype_gl_set_message_callback(message_callback_t callback)
+void ftgl_set_message_callback(message_callback_t callback)
 {
 	assert(callback != NULL);
 
 	message_callback = callback;
 }
 
-message_callback_t freetype_gl_get_message_callback()
+message_callback_t ftgl_get_message_callback()
 {
 	return message_callback;
 }
@@ -45,7 +45,7 @@ int default_filesystem_callback(const char* filename, void* buffer, size_t* size
 		char message[128];
 		sprintf(message, "Unable to open file \"%s\".", filename);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+		ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
 		return 0;
 	}
@@ -71,14 +71,14 @@ int default_filesystem_callback(const char* filename, void* buffer, size_t* size
 
 static filesystem_callback_t filesystem_callback = &default_filesystem_callback;
 
-void freetype_gl_set_filesystem_callback(filesystem_callback_t callback)
+void ftgl_set_filesystem_callback(filesystem_callback_t callback)
 {
 	assert(callback != NULL);
 
 	filesystem_callback = callback;
 }
 
-filesystem_callback_t freetype_gl_get_filesystem_callback()
+filesystem_callback_t ftgl_get_filesystem_callback()
 {
 	return filesystem_callback;
 }

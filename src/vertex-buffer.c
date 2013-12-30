@@ -219,7 +219,7 @@ vertex_buffer_print( vertex_buffer_t * self )
 	sprintf(message, "%ld vertices, %ld indices",
 		vector_size(self->vertices), vector_size(self->indices));
 
-	freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+	ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
     while( self->attributes[i] )
     {
@@ -244,7 +244,7 @@ vertex_buffer_print( vertex_buffer_t * self )
 			gltypes[j],
 			self->attributes[i]->pointer);
 
-		freetype_gl_get_message_callback()(MESSAGE_WARNING, message);
+		ftgl_get_message_callback()(MESSAGE_WARNING, message);
 
         i += 1;
     }

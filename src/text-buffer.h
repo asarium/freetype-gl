@@ -123,12 +123,12 @@ typedef struct {
     /**
      * Shader "texture" location
      */
-    GLuint shader_texture;
+    GLint shader_texture;
 
     /**
      * Shader "pixel" location
      */
-    GLuint shader_pixel;
+    GLint shader_pixel;
 
 } text_buffer_t;
 
